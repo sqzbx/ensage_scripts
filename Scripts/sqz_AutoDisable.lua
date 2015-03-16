@@ -8,17 +8,15 @@ require("libs.DisableSpells")
 
 local config = ScriptConfig.new()
 config:SetParameter("Active", "U", config.TYPE_HOTKEY)
-config:SetParameter("RightSide", true)
 config:Load()
 
 local toggleKey   = config.Active
-local RightSide   = config.RightSide
 local active      = false
 local reg         = false
 local x_ratio     = client.screenSize.x/1600
 local indent 	  = 255
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*x_ratio,550*x_ratio) 
-local statusText  = drawMgr:CreateText(5*x_ratio,45*x_ratio,-1,"Auto Disable [" .. string.char(toggleKey) .. "]: Blink",F14) statusText.visible = false
+local statusText  = drawMgr:CreateText(5*x_ratio,665*x_ratio,-1,"Auto Disable [" .. string.char(toggleKey) .. "]: B",F14) statusText.visible = false
 local activated   = 0
 
 local hero = {} local icon = {}
@@ -31,9 +29,9 @@ function Key(msg,code)
 	if IsKeyDown(toggleKey) then
 		active = not active
 		if active then
-			statusText.text = "Auto Disable [" .. string.char(toggleKey) .. "]: All"
+			statusText.text = "Auto Disable [" .. string.char(toggleKey) .. "]: A"
 		else
-			statusText.text = "Auto Disable [" .. string.char(toggleKey) .. "]: Blink"
+			statusText.text = "Auto Disable [" .. string.char(toggleKey) .. "]: B"
 		end
 	end
 	
@@ -58,10 +56,6 @@ function Tick( tick )
 	if not PlayingGame() then return end
 	if sleepTick and sleepTick > tick then return end	
 	me = entityList:GetMyHero() if not me then return end
-	
-	if RightSide then 
-		indent = 1330
-	end
 	
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})
 	table.sort( enemies, function (a,b) return a.playerId < b.playerId end )

@@ -16,7 +16,7 @@ local RemainingTime = config.RemainingTime
 local registered  = false
 
 local F14 = drawMgr:CreateFont("F14","Tahoma",14*Screen,550*Screen)
-local statusText = drawMgr:CreateText(1485*Screen,695*Screen,-1,"TP Sellback [T]: OFF",F14)
+local statusText = drawMgr:CreateText(5*Screen,695*Screen,-1,"TP Sellback [T]: OFF",F14)
 
 function onLoad()
 	if PlayingGame() then

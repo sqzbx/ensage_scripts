@@ -4,14 +4,11 @@ require("libs.AbilityDamage")
 require("libs.Animations")
 
 local config = ScriptConfig.new()
-config:SetParameter("Active", "U", config.TYPE_HOTKEY)
+config:SetParameter("Active", "P", config.TYPE_HOTKEY)
 config:SetParameter("TresholdPercent", 100) -- TresholdPercent for missing HP
-config:SetParameter("GUIxPosition", 1472)
-config:SetParameter("GUIyPosition", 680)
 config:Load()
 
 local toggleKey = config.Active
-local x,y = config:GetParameter("GUIxPosition"), config:GetParameter("GUIyPosition")
 
 local reg = false local activ = true 
 local myhero = nil local onlyitems = false
@@ -20,7 +17,7 @@ local spellDamageTable = {}
 
 local monitor = client.screenSize.x/1600
 local F14 = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
-local statusText = drawMgr:CreateText(x*monitor,y*monitor,-1,"Auto Support [U]: ON",F14) statusText.visible = false
+local statusText = drawMgr:CreateText(5*monitor,680*monitor,-1,"Auto Support [P]: ON",F14) statusText.visible = false
 
 function SupportTick(tick)
 	if not SleepCheck() or not PlayingGame() or Animations.maxCount < 1 then return end Sleep(200)
@@ -119,7 +116,7 @@ end
 function Key(msg,code)
 	if client.chat or client.console or code ~= toggleKey or msg ~= KEY_UP then return end
 	activ = not activ
-	statusText.text = "Auto Support [U]: " .. Activ(activ)
+	statusText.text = "Auto Support [P]: " .. Activ(activ)
 end
 
 function Save(me,ability1,ability2,range,target,tresh,treshspell,duration,special,excludeme)
