@@ -16,7 +16,7 @@ local reg         = false
 local x_ratio     = client.screenSize.x/1600
 local indent 	  = 255
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*x_ratio,550*x_ratio) 
-local statusText  = drawMgr:CreateText(5*x_ratio,665*x_ratio,-1,"Auto Disable [" .. string.char(toggleKey) .. "]: B",F14) statusText.visible = false
+local statusText  = drawMgr:CreateText(5*x_ratio,595*x_ratio,-1,"Auto Disable [" .. string.char(toggleKey) .. "]: B",F14) statusText.visible = false
 local activated   = 0
 
 local hero = {} local icon = {}

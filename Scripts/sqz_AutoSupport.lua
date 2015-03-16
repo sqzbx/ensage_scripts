@@ -17,7 +17,7 @@ local spellDamageTable = {}
 
 local monitor = client.screenSize.x/1600
 local F14 = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
-local statusText = drawMgr:CreateText(5*monitor,680*monitor,-1,"Auto Support [P]: ON",F14) statusText.visible = false
+local statusText = drawMgr:CreateText(5*monitor,610*monitor,-1,"Auto Support [P]: ON",F14) statusText.visible = false
 
 function SupportTick(tick)
 	if not SleepCheck() or not PlayingGame() or Animations.maxCount < 1 then return end Sleep(200)
