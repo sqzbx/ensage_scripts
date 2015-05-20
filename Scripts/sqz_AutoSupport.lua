@@ -25,25 +25,25 @@ function SupportTick(tick)
 	if not me then return end
 	local ID = me.classId
 	if ID ~= myhero then GameClose() end
-	local meka = me:FindItem("item_mekansm") local urn = me:FindItem("item_urn_of_shadows") local manaboots = me:FindItem("item_arcane_boots") local needmana = nil local needmeka = nil
+	local meka = me:FindItem("item_mekansm") local guardian = me:FindItem("item_guardian_greaves") local urn = me:FindItem("item_urn_of_shadows") local manaboots = me:FindItem("item_arcane_boots") local needmana = nil local needmeka = nil
 	local allies = entityList:GetEntities({type = LuaEntity.TYPE_HERO,team = me.team})
 	local fountain = entityList:GetEntities({classId = CDOTA_Unit_Fountain,team = me.team})[1]
 	for i,v in ipairs(allies) do
 		if not v:IsIllusion() and v.alive and v.health > 0 and me.alive and not me:IsChanneling() and GetDistance2D(me,fountain) > 2000 and (not me:IsInvisible() or me:DoesHaveModifier("modifier_treant_natures_guise")) and activ then
 			local distance = GetDistance2D(me,v)
-			if meka and meka.cd == 0 then
-				if (v.maxHealth - v.health) > (450 + v.healthRegen*10) and distance <= 2000 and me.mana >= 225 then
+			--if meka and meka.cd == 0 then
+				if (v.maxHealth - v.health) > (450 + v.healthRegen*10) and distance <= 2000 and (me.mana >= 225 or guardian) then
 					if not needmeka or (needmeka and GetDistance2D(needmeka,me) <= 750) then
 						needmeka = v
 					end		
 				end
-			end
+			--end
 			if urn and urn.cd == 0 and urn.charges > 0 and not v:DoesHaveModifier("modifier_item_urn_heal") then
 				if (v.maxHealth - v.health) > (500  + v.healthRegen*10) and distance <= 950 and not IsInDanger(v) then
-					me:CastItem(urn.name,v) return
+					me:CastAbility(urn,v) return
 				end
 				if me:DoesHaveModifier("modifier_wisp_tether") and (v.maxHealth - v.health) >= 600 then
-					me:CastItem(urn.name,me) return
+					me:CastAbility(urn,me) return
 				end
 			end
 			if manaboots and manaboots.cd == 0 then
@@ -56,11 +56,15 @@ function SupportTick(tick)
 		end
 	end
 	
-	if needmeka and meka and meka:CanBeCasted() and GetDistance2D(needmeka,me) <= 750 then
-		me:CastItem(meka.name) return 
+	if needmeka and ((guardian and guardian:CanBeCasted()) or (meka and meka:CanBeCasted())) and GetDistance2D(needmeka,me) <= 750 then
+		if meka then
+			me:CastAbility(meka) return 
+		else
+			me:CastAbility(guardian) return
+		end
 	end
 	if needmana and manaboots and manaboots:CanBeCasted() and GetDistance2D(needmana,me) <= 600 then
-		me:CastItem(manaboots.name)
+		me:CastAbility(manaboots)
 	end
 	
 	if not onlyitems then
@@ -189,7 +193,7 @@ end
 
 function Heal(me,ability,amount,range,target,id,excludeme,special)
 	local heal = me:GetAbility(ability)
-	if heal and heal.level > 0 and heal.state == LuaEntityAbility.STATE_READY then
+	if heal and heal.level > 0 and heal:CanBeCasted() then
 		local Range = (range) or (heal.castRange + 50)		
 		local fountain = entityList:GetEntities({classId = CDOTA_Unit_Fountain,team = me.team})[1]
 		if me.alive and not me:IsChanneling() and (not me:IsInvisible() or me:DoesHaveModifier("modifier_treant_natures_guise")) and GetDistance2D(me,fountain) > 2000 then
@@ -258,7 +262,9 @@ function ExecuteHeal(spell,target,me,toggle)
 	if spell and spell:CanBeCasted() and me:CanCast() then
 		if toggle then
 			if not spell.toggled then
-				me:ToggleSpell(spell.name)
+				local prev = SelectUnit(me)
+				entityList:GetMyPlayer():ToggleAbility(spell)
+				SelectBack(prev)
 			end
 		else
 			if not target then
